@@ -21,65 +21,69 @@ def choose(n,k):
 
 #Population 
 #Making a list of all the protein in the population and counting the total population
-progenelist = []
-numpopulation = 0
-genelist = open('TAIR10_pep_20101214.txt', 'r')
-for gene in genelist:
-    if gene[0] == '>':
-        numpopulation += 1
-        progenelist.append(gene[1:10])
+def hypergeometric(userfile, output):
+    progenelist = []
+    numpopulation = 0
+    genelist = open('TAIR10_pep_20101214.txt', 'r')
+    for gene in genelist:
+        if gene[0] == '>':
+            numpopulation += 1
+            progenelist.append(gene[1:10])
 
-#Reads the GO file
-file = open("Ara.DetailInfo",'r')
-x = file.readlines()
+    #Reads the GO file
+    file = open("Ara.DetailInfo",'r')
+    x = file.readlines()
 
 
-motiflist = open('dentyne.txt','r')
-finish = open('motifpvalue.txt','w')
-#Gets the protein list for a motif (sample) and checks number of matches in the terms
-for motif in motiflist:
-    s1 = motif.replace('\n','')
-    m = s1.split('\t')
-    protlist = m[1].split(',')
+    motiflist = open(userfile,'r')
+    finish = open(output,'w')
+    #Gets the protein list for a motif (sample) and checks number of matches in the terms
+    for motif in motiflist:
+        s1 = motif.replace('\n','')
+        m = s1.split('\t')
+        protlist = m[1].split(',')
     
-    biglist = []
-    #loop for EACH term
-    for line in x:
+        biglist = []
+        #loop for EACH term
+        for line in x:
        
-        s = line.replace('\n','')
-        something = s.split('\t')
-        termprot = something[10].split(',')
+            s = line.replace('\n','')
+            something = s.split('\t')
+            termprot = something[10].split(',')
     
-        numsample = 0
-        #loop to compare the motif with term
-        #THIS IS THE NUMBER OF SUCCESSES IN THE SAMPLE
-        samplematch = 0
+            numsample = 0
+            #loop to compare the motif with term
+            #THIS IS THE NUMBER OF SUCCESSES IN THE SAMPLE
+            samplematch = 0
         
-        for protein in protlist:
-            numsample += 1
-            fix = protein.replace('\n','')
-            if fix in termprot:
-                samplematch += 1
+            for protein in protlist:
+                numsample += 1
+                fix = protein.replace('\n','')
+                if fix in termprot:
+                    samplematch += 1
             
-        #need to find number of matches in the tair file for each term
-        # THIS IS NUM OF SUCCESSES IN THE POPULATION
+            #need to find number of matches in the tair file for each term
+            # THIS IS NUM OF SUCCESSES IN THE POPULATION
 
-        nummatch = 0
-        for g in progenelist:
-            if g in termprot:
-                nummatch += 1
+            nummatch = 0
+            for g in progenelist:
+                if g in termprot:
+                    nummatch += 1
     
-        #CALCULATE P-VALUE
-        p = (choose(nummatch, samplematch) * choose(numpopulation-nummatch, numsample - samplematch))\
+            #CALCULATE P-VALUE
+            p = (choose(nummatch, samplematch) * choose(numpopulation-nummatch, numsample - samplematch))\
                          / choose(numpopulation, numsample) 
        
-        biglist.append([something[0],p])
+            biglist.append([something[0],p])
         
-    new = sorted(biglist, key = lambda pvalue: pvalue[1])
-    finish.write(m[0] + '\t')
-    for b in new[0:11]:
-        finish.write(str(b))
-    finish.write('\n')
+        new = sorted(biglist, key = lambda pvalue: pvalue[1])
+        finish.write(m[0] + '\t')
+        for b in new[0:11]:
+            finish.write(str(b))
+        finish.write('\n')
 
 
-finish.close()
+    finish.close()
+
+    
+
