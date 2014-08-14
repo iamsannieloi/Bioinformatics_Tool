@@ -18,6 +18,7 @@ Steps 1&2 --> splitMotif.py
 
 Steps 3 --> hypergeometricTest.py
 - takes the output from steps 1&2 and runs it through a hypergeometric test. Loops through all the possible terms and motifs, so takes a while to run.
+-Function: hypergeometric(userfile, output)
 
 Steps 4 --> frequencyTable.py
 - Given a cutoff value (i.e. Top 50), the frequency table produces a list of terms ordered by the most appeared to least within the cutoff range
