@@ -12,20 +12,21 @@ def findavg(pvalue):
     return avg
         
         
-def plotmotif(overlay, cutoff, coeffvalue):
+def plotmotif(termlist, hyper_file, overlay, cutoff, coeffvalue):
     
-    f = open('HypogeometricFull.txt','r')
+    #open files to be plotted
+    f = open(hyper_file,'r')
     f = f.readlines()
-    g = open('userfile2.txt', 'r')
+    g = open(termlist, 'r')
     t = g.readlines()
     
-    counter = 0
+    counter = 0 #used to keep track of the position
     pvalue = [ [] for i in range(len(t))]
     motif = [ [] for j in range(len(t))]
     for term in t: #loops for the terms listed that wanted to be graphed
         m = term.replace('\n','')
         
-        for line in f: # loops for the motifs that are in the Full file
+        for line in f: # loops for the motifs that are in the hypergeometric file
             a = line.replace('\n','')
             b = a.split('\t')
             c = b[1].split('|')
@@ -48,7 +49,7 @@ def plotmotif(overlay, cutoff, coeffvalue):
                 
         counter += 1
 
-    
+    #styles of lines are created
     color = ['b','r','g','m','c','y','k'] 
     linestyles = ['-','--','-.',':']
     style = []
@@ -68,6 +69,7 @@ def plotmotif(overlay, cutoff, coeffvalue):
         new = defaultdict(list)
         new[counter].append(t[0])
         
+        #clusters the results
         for j in range(1,len(pvalue)):
             close = False
             for o in range(0, len(difflst)):
@@ -81,7 +83,7 @@ def plotmotif(overlay, cutoff, coeffvalue):
                 new[counter].append(t[j])
                 difflst.append(pvalue[j])
                 diffmotif.append(t[j])
-        
+        #creates the subplots
         for k in range(len(difflst)):
            
             plt.subplot(len(difflst),1,k)
@@ -130,7 +132,7 @@ def plotmotif(overlay, cutoff, coeffvalue):
             
         legend = plt.legend()
         legend.get_frame().set_alpha(0.5)
-        plt.title('Correlated Coefficient: ' + str(coeffvalue) + ' Cutoff: ' + str(cutoff) + ' for terms of C terminus for Bienertia sinuspersici')
+        plt.title('Correlated Coefficient: ' + str(coeffvalue) + ' Cutoff: ' + str(cutoff))
         plt.xlabel('Motif position')
         plt.ylabel('-log(P-value)')
         plt.ylim(ymin = 0)
